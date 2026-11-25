@@ -1,0 +1,49 @@
+{
+  "name": "segura-ifpa",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "scripts": {
+    "dev": "prisma generate && next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "better-auth": "^1.7.27",
+    "lucide-react": "^0.468.0",
+    "next": "^16.4.6",
+    "pg": "^8.16.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@neon/config": "^1.14.6",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/node": "^22.18.1",
+    "@types/pg": "^8.15.5",
+    "@types/react": "^19.1.7",
+    "@types/react-dom": "^19.1.7",
+    "dotenv": "^16.6.1",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^15.5.0",
+    "prisma": "^7.0.0",
+    "tailwindcss": "^4.1.12",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.0.0": true,
+    "esbuild@0.28.2": true,
+    "prisma@7.0.0": true
+  }
+}

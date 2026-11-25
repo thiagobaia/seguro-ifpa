@@ -1,0 +1,1 @@
+ALTER TABLE "EpiRequest" ADD COLUMN "registration" TEXT NOT NULL DEFAULT '';

@@ -1,0 +1,16 @@
+node_modules/
+.next/
+.next-server/
+.env
+.env.*
+.manus
+.next
+.work
+!.env.example
+.neon
+src/generated/prisma/
+public/uploads/
+coverage/
+*.log
+.DS_Store
+/outputs

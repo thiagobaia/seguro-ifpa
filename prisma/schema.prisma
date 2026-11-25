@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          String    @default("WORKER")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Sector {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  checklists Checklist[]
+  requests  EpiRequest[]
+  reports   SafetyReport[]
+}
+
+model JobFunction {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  createdAt  DateTime    @default(now())
+  checklists Checklist[]
+}
+
+model Checklist {
+  id            String                 @id @default(cuid())
+  title         String
+  jobFunctionId String
+  sectorId      String
+  items         Json
+  createdAt     DateTime               @default(now())
+  jobFunction   JobFunction            @relation(fields: [jobFunctionId], references: [id])
+  sector        Sector                 @relation(fields: [sectorId], references: [id])
+  responses     ChecklistResponse[]
+}
+
+model ChecklistResponse {
+  id          String    @id @default(cuid())
+  checklistId String
+  answers     Json
+  submittedAt DateTime  @default(now())
+  archivedAt  DateTime?
+  checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@index([checklistId, submittedAt])
+}
+
+model EpiRequest {
+  id          String   @id @default(cuid())
+  name        String
+  registration String  @default("")
+  sectorId    String
+  jobFunction String
+  epi         String
+  reason      String
+  createdAt   DateTime @default(now())
+  sector      Sector   @relation(fields: [sectorId], references: [id])
+
+  @@index([createdAt])
+}
+
+model SafetyReport {
+  id          String   @id @default(cuid())
+  anonymous   Boolean  @default(true)
+  sectorId    String
+  occurrence  String
+  description String
+  createdAt   DateTime @default(now())
+  sector      Sector   @relation(fields: [sectorId], references: [id])
+
+  @@index([createdAt])
+}
+
+model Bulletin {
+  id          String   @id @default(cuid())
+  imageUrl    String?
+  title       String
+  description String
+  category    String   @default("PREVENÇÃO")
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([expiresAt, createdAt])
+}
+
+model Training {
+  id        String   @id @default(cuid())
+  title     String
+  files     Json
+  createdAt DateTime @default(now())
+}
