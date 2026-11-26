@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowLeft, Building2, ChevronDown, ChevronLeft, ChevronRight, Search, ShieldAlert, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Building2, ChevronDown, ChevronLeft, ChevronRight, Search, ShieldAlert, ShieldCheck, Trash2 } from "lucide-react";
 
 type ReportRecord = {
   id: string;
@@ -18,10 +18,11 @@ type ReportListProps = {
   reports: ReportRecord[];
   selectedReport: ReportRecord | null;
   onViewReport: (report: ReportRecord) => void;
+  onDelete: (report: ReportRecord) => void;
   onBack: () => void;
 };
 
-export function TstReportsTable({ reports, selectedReport, onViewReport, onBack }: ReportListProps) {
+export function TstReportsTable({ reports, selectedReport, onViewReport, onDelete, onBack }: ReportListProps) {
   const [search, setSearch] = useState("");
   const [sector, setSector] = useState("all");
   const [page, setPage] = useState(0);
@@ -64,7 +65,7 @@ export function TstReportsTable({ reports, selectedReport, onViewReport, onBack 
   if (selectedReport) {
     const identityIsAnonymous = selectedReport.anonymous ?? reportIdentity(selectedReport) === "Anônimo";
     return <div className="grid min-w-0 gap-5">
-      <button type="button" onClick={onBack} className="inline-flex min-h-9 w-fit items-center gap-2 rounded-lg px-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"><ArrowLeft size={17} /> Voltar às denúncias</button>
+      <div className="flex flex-wrap items-center justify-between gap-3"><button type="button" onClick={onBack} className="inline-flex min-h-9 w-fit items-center gap-2 rounded-lg px-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"><ArrowLeft size={17} /> Voltar às denúncias</button><button type="button" onClick={() => onDelete(selectedReport)} className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-rose-200 bg-white px-3 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600" aria-label={`Excluir denúncia: ${selectedReport.title}`}><Trash2 size={16} /> Excluir denúncia</button></div>
       <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)] lg:items-start">
         <article className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
           <span className="mb-3 inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.12em] text-emerald-700"><ShieldAlert size={15} /> DENÚNCIA RECEBIDA</span>
@@ -131,7 +132,7 @@ export function TstReportsTable({ reports, selectedReport, onViewReport, onBack 
                 <td className="px-4 py-3.5 text-sm text-slate-600">{reportSector(report)}</td>
                 <td className="px-4 py-3.5"><span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${report.anonymous ? "bg-slate-100 text-slate-600" : "bg-emerald-50 text-emerald-800"}`}>{reportIdentity(report)}</span></td>
                 <td className="whitespace-nowrap px-4 py-3.5 text-sm text-slate-500">{report.date}</td>
-                <td className="px-5 py-3.5 text-right"><button type="button" onClick={() => onViewReport(report)} className="inline-flex min-h-8 items-center gap-1 rounded-md px-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600" aria-label={`Ver denúncia: ${report.title}`}>Ver <ChevronRight size={15} /></button></td>
+                <td className="px-5 py-3.5 text-right"><div className="inline-flex items-center gap-1"><button type="button" onClick={() => onViewReport(report)} className="inline-flex min-h-8 items-center gap-1 rounded-md px-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600" aria-label={`Ver denúncia: ${report.title}`}>Ver <ChevronRight size={15} /></button><button type="button" onClick={() => onDelete(report)} className="grid h-8 w-8 place-items-center rounded-md text-slate-500 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600" aria-label={`Excluir denúncia: ${report.title}`} title="Excluir denúncia"><Trash2 size={16} /></button></div></td>
               </tr>)}
             </tbody>
           </table>
@@ -139,7 +140,7 @@ export function TstReportsTable({ reports, selectedReport, onViewReport, onBack 
         <div className="grid gap-3 p-3 md:hidden">
           {visibleReports.map((report) => <article key={report.id} className="grid gap-3 rounded-lg border border-slate-200 p-3">
             <div className="flex items-start justify-between gap-3"><div className="min-w-0"><h2 className="break-words text-sm font-semibold text-slate-800">{report.title}</h2><p className="mt-1 text-xs text-slate-500">{reportSector(report)}</p></div><span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-600">{reportIdentity(report)}</span></div>
-            <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-2"><time className="text-xs text-slate-500">{report.date}</time><button type="button" onClick={() => onViewReport(report)} className="inline-flex min-h-8 items-center gap-1 rounded-md px-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600" aria-label={`Ver denúncia: ${report.title}`}>Ver <ChevronRight size={15} /></button></div>
+            <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-2"><time className="text-xs text-slate-500">{report.date}</time><div className="inline-flex items-center gap-1"><button type="button" onClick={() => onViewReport(report)} className="inline-flex min-h-8 items-center gap-1 rounded-md px-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600" aria-label={`Ver denúncia: ${report.title}`}>Ver <ChevronRight size={15} /></button><button type="button" onClick={() => onDelete(report)} className="grid h-8 w-8 place-items-center rounded-md text-slate-500 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600" aria-label={`Excluir denúncia: ${report.title}`} title="Excluir denúncia"><Trash2 size={16} /></button></div></div>
           </article>)}
         </div>
       </> : <div className="px-4 py-12 text-center"><p className="text-sm font-semibold text-slate-700">{reports.length ? "Nenhuma denúncia encontrada" : "Ainda não há denúncias registradas."}</p><p className="mt-1 text-sm text-slate-500">{reports.length ? "Tente ajustar a busca ou o filtro de setor." : "As novas ocorrências aparecerão nesta lista."}</p></div>}

@@ -133,6 +133,28 @@ export async function deleteChecklistResponse(formData: FormData) {
   redirect("/tst?excluido=resposta#checklists");
 }
 
+export async function deleteEpiRequest(formData: FormData) {
+  await requireTst();
+  const id = value(formData, "id");
+  if (!id) redirect("/tst?erro=exclusao#requests");
+  const existing = await prisma.epiRequest.findUnique({ where: { id } });
+  if (!existing) redirect("/tst?erro=exclusao#requests");
+  await prisma.epiRequest.delete({ where: { id } });
+  revalidatePath("/tst");
+  redirect("/tst?excluido=solicitacao#requests");
+}
+
+export async function deleteSafetyReport(formData: FormData) {
+  await requireTst();
+  const id = value(formData, "id");
+  if (!id) redirect("/tst?erro=exclusao#reports");
+  const existing = await prisma.safetyReport.findUnique({ where: { id } });
+  if (!existing) redirect("/tst?erro=exclusao#reports");
+  await prisma.safetyReport.delete({ where: { id } });
+  revalidatePath("/tst");
+  redirect("/tst?excluido=denuncia#reports");
+}
+
 export async function publishBulletin(formData: FormData) {
   await requireTst();
   const title = value(formData, "title");
@@ -152,13 +174,12 @@ export async function publishBulletin(formData: FormData) {
 export async function deleteBulletin(formData: FormData) {
   await requireTst();
   const id = value(formData, "id");
-  if (!id) redirect("/tst?erro=informativo#bulletins");
+  if (!id) return;
   const existing = await prisma.bulletin.findUnique({ where: { id } });
-  if (!existing) redirect("/tst?erro=informativo#bulletins");
+  if (!existing) return;
   await prisma.bulletin.delete({ where: { id } });
   revalidatePath("/home");
   revalidatePath("/tst");
-  redirect("/tst?excluido=informativo#bulletins");
 }
 
 export async function createTraining(formData: FormData) {
@@ -173,4 +194,16 @@ export async function createTraining(formData: FormData) {
   revalidatePath("/treinamentos");
   revalidatePath("/tst");
   redirect("/tst?criado=treinamento#trainings");
+}
+
+export async function deleteTraining(formData: FormData) {
+  await requireTst();
+  const id = value(formData, "id");
+  if (!id) redirect("/tst?erro=exclusao#trainings");
+  const existing = await prisma.training.findUnique({ where: { id } });
+  if (!existing) redirect("/tst?erro=exclusao#trainings");
+  await prisma.training.delete({ where: { id } });
+  revalidatePath("/treinamentos");
+  revalidatePath("/tst");
+  redirect("/tst?excluido=treinamento#trainings");
 }
