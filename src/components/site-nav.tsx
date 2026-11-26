@@ -13,6 +13,8 @@ import {
 import { TstSignOut } from "@/components/tst-sign-out";
 import { authClient } from "@/lib/auth-client";
 
+import logo from "../../public/iris-logo.jpeg"
+
 const links = [
   { href: "/home", label: "Feed", icon: House },
   { href: "/checklist", label: "Checklist", icon: ClipboardCheck },
@@ -27,7 +29,7 @@ const links = [
 
 export function IrisLogo({ compact = false }: { compact?: boolean }) {
   return <span className={`inline-flex flex-col items-center justify-center leading-none ${compact ? "gap-0.5" : "gap-1"}`}>
-    <span className={`overflow-hidden ${compact ? "h-10 w-12" : "h-10 w-12 sm:h-14 sm:w-16"}`} aria-hidden="true"><Image src="/iris-logo.jpeg" alt="" width={359} height={498} unoptimized className="h-auto w-full object-cover object-top" /></span>
+    <span className={`overflow-hidden ${compact ? "h-10 w-12" : "h-10 w-12 sm:h-14 sm:w-16"}`} aria-hidden="true"><Image src={logo} alt="" width={359} height={498} unoptimized className="h-auto w-full object-cover object-top" /></span>
     <strong className={`${compact ? "text-[11px]" : "text-[11px] sm:text-sm"} font-extrabold tracking-[.08em] text-[#0e5b46]`}>IRIS</strong>
     <span className={`${compact ? "text-[6px]" : "text-[6px] sm:text-[7px]"} whitespace-nowrap font-medium tracking-[.01em] text-[#176f57]`}>Comunicação Digital e SST</span>
   </span>;
