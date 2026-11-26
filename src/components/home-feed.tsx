@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { ArrowUpRight, ArrowRight, MoreHorizontal } from "lucide-react";
 import { useUiStore } from "@/components/ui-store-provider";
 import type { FeedCategory } from "@/stores/ui-store";
+import { deleteBulletin } from "@/app/tst-actions";
 
-export type FeedPost = { category: string; date: string; title: string; description: string; validUntil: string | null; image: string | null };
+export type FeedPost = { id?: string; category: string; date: string; title: string; description: string; validUntil: string | null; image: string | null };
 const categories: FeedCategory[] = ["Para você", "Prevenção", "Bem-estar"];
 const shortcuts = [
   { number: "01", title: "Checklist de segurança", caption: "Conferir antes de iniciar →", href: "/checklist" },
@@ -17,6 +19,7 @@ const shortcuts = [
 export function HomeFeed({ posts }: { posts: FeedPost[] }) {
   const category = useUiStore((state) => state.category);
   const setCategory = useUiStore((state) => state.setCategory);
+  const [openPostId, setOpenPostId] = useState<string | null>(null);
   const visiblePosts = category === "Para você" ? posts : posts.filter((post) => post.category.toLowerCase() === category.toLowerCase());
 
   return <main className="home-shell">
@@ -27,8 +30,8 @@ export function HomeFeed({ posts }: { posts: FeedPost[] }) {
         <p className="aside-note">Um ambiente mais seguro começa com todos nós.</p>
       </aside>
       <section aria-label="Feed de informativos"><div className="feed-tabs" role="tablist" aria-label="Filtrar informativos">{categories.map((item) => <button key={item} type="button" role="tab" aria-selected={category === item} className={`feed-tab${category === item ? " active" : ""}`} onClick={() => setCategory(item)}>{item}</button>)}</div>
-        <div className="feed-column">{visiblePosts.map((post, index) => <article className="post-card" key={`${post.title}-${index}`}>
-          <header className="post-head"><div className="avatar" aria-hidden="true">S</div><div><div className="post-author">Equipe de Segurança</div><div className="post-meta">{post.date} · Informativo</div></div><MoreHorizontal className="post-more" aria-hidden="true" /></header>
+        <div className="feed-column">{visiblePosts.map((post, index) => <article className="post-card" key={post.id ?? `${post.title}-${index}`}>
+          <header className="post-head"><div className="avatar" aria-hidden="true">S</div><div><div className="post-author">Equipe de Segurança</div><div className="post-meta">{post.date} · Informativo</div></div>{post.id ? <div className="relative ml-auto"><button type="button" className="post-more grid h-8 w-8 place-items-center rounded-full" aria-label="Mais opções do informativo" aria-expanded={openPostId === post.id} onClick={() => setOpenPostId(openPostId === post.id ? null : post.id!)}><MoreHorizontal size={19} /></button>{openPostId === post.id && <div className="absolute right-0 top-10 z-20 min-w-40 rounded-xl border border-slate-200 bg-white p-1 shadow-lg"><form action={deleteBulletin} onSubmit={(event) => { if (!window.confirm(`Excluir o informativo “${post.title}”? Esta ação não pode ser desfeita.`)) event.preventDefault(); }}><input type="hidden" name="id" value={post.id} /><button type="submit" className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-semibold text-rose-700 transition hover:bg-rose-50">Excluir post</button></form></div>}</div> : <MoreHorizontal className="post-more" aria-hidden="true" />}</header>
           {post.image && <Image className="post-image" src={post.image} alt="Equipamentos de proteção individual sobre uma bancada de oficina" width={1200} height={700} priority={index === 0} unoptimized />}
           <div className="post-body"><span className="post-category">{post.category} · Segurança</span><h2>{post.title}</h2><p>{post.description}</p><div className="post-footer"><Link className="share-link" href="/treinamentos">Compartilhar <ArrowUpRight size={14} /></Link><span>{post.validUntil ? `Válido até ${post.validUntil}` : "Conteúdo informativo"}</span></div></div>
         </article>)}{visiblePosts.length === 0 && <div className="post-card text-post"><p>Nenhum informativo nesta categoria por enquanto.</p></div>}</div>

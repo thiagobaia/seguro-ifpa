@@ -149,6 +149,18 @@ export async function publishBulletin(formData: FormData) {
   redirect("/tst?criado=informativo#bulletins");
 }
 
+export async function deleteBulletin(formData: FormData) {
+  await requireTst();
+  const id = value(formData, "id");
+  if (!id) redirect("/tst?erro=informativo#bulletins");
+  const existing = await prisma.bulletin.findUnique({ where: { id } });
+  if (!existing) redirect("/tst?erro=informativo#bulletins");
+  await prisma.bulletin.delete({ where: { id } });
+  revalidatePath("/home");
+  revalidatePath("/tst");
+  redirect("/tst?excluido=informativo#bulletins");
+}
+
 export async function createTraining(formData: FormData) {
   await requireTst();
   const title = value(formData, "title");

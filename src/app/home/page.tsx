@@ -11,6 +11,7 @@ export default async function HomePage() {
   if (hasDatabase) {
     const records = await prisma.bulletin.findMany({ where: { expiresAt: { gte: new Date() } }, orderBy: { createdAt: "desc" } });
     posts = records.map((item) => ({
+      id: item.id,
       category: item.category,
       date: `${item.createdAt.getDate()} ${item.createdAt.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "")}`,
       title: item.title,
