@@ -5,8 +5,8 @@ export default async function EpiRequestPage({ searchParams }: { searchParams: P
   const params = await searchParams;
   return <><main className="form-shell"><section className="form-panel">
     <span className="eyebrow">Espaço do trabalhador · Proteção</span><h1>Solicitar EPI</h1><p>Conte o que você precisa para trabalhar com segurança. A equipe responsável receberá sua solicitação.</p>
-    {params.enviado && <p className="notice" role="status">Solicitação enviada. Obrigado por cuidar da sua segurança.</p>}
-    {params.erro && <p className="notice" role="alert">Preencha todos os campos para enviar.</p>}
+    {params.enviado && <p className="site-alert site-alert-success" role="status">Solicitação enviada. Obrigado por cuidar da sua segurança.</p>}
+    {params.erro && <p className="site-alert site-alert-error" role="alert">Preencha todos os campos para enviar.</p>}
     <form action={submitEpiRequest} className="form-grid">
       <div className="field"><label htmlFor="name">Nome</label><input id="name" name="name" autoComplete="name" required /></div>
       <div className="field"><label htmlFor="registration">Matrícula</label><input id="registration" name="registration" inputMode="numeric" autoComplete="off" required /></div>

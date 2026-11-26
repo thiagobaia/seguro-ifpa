@@ -52,7 +52,7 @@ export function TstCreatorForm() {
       <p className="login-card-copy">Crie sua conta com nome, e-mail e senha. O perfil e a credencial são gravados pelo Better Auth no banco da aplicação.</p>
 
       {feedback && (
-        <p className={`login-feedback ${feedback.kind}`} role={feedback.kind === "error" ? "alert" : "status"}>
+        <p className={`site-alert login-feedback ${feedback.kind === "error" ? "error" : "success"}`} role={feedback.kind === "error" ? "alert" : "status`}>
           {feedback.text}
         </p>
       )}

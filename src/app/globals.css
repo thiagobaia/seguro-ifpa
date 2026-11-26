@@ -80,7 +80,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .login-card { width: min(460px, calc(100% - 32px)); margin: 60px auto; }
 .training-list { display: grid; gap: 13px; }
 .training-card { display: flex; gap: 15px; align-items: center; border: 1px solid var(--line); border-radius: 15px; padding: 18px; background: #fff; }
-.notice { color: #718078; background: #f1f6f3; border-radius: 10px; padding: 12px; font-size: 13px; }
+.site-alert { width: min(100%, 48rem); margin: 0 auto 1rem; display: flex; align-items: flex-start; gap: .7rem; border: 1px solid; border-radius: 14px; padding: 13px 16px; font-size: 13px; line-height: 1.5; box-shadow: 0 8px 24px rgba(22,59,50,.08); }
+.site-alert-success { color: #14532d; background: #ecfdf3; border-color: #86efac; }
+.site-alert-error { color: #ffe4e6; background: #5b001f; border-color: #881337; }
+.site-alert-warning { color: #713f12; background: #fffbeb; border-color: #fcd34d; }
+.site-alert-info { color: #475569; background: #f1f6f3; border-color: #d6e4dc; }
+.notice { color: #ffe4e6; background: #5b001f; border: 1px solid #881337; border-radius: 14px; padding: 13px 16px; font-size: 13px; line-height: 1.5; box-shadow: 0 8px 24px rgba(22,59,50,.08); }
 .admin-tools { display: grid; gap: 14px; margin-top: 24px; }
 .admin-tools h2 { margin: 0 0 8px; color: #244238; font-size: 18px; }
 .record-list { display: grid; gap: 10px; }
@@ -150,9 +155,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .login-mode-toggle:hover { background: #e7f1eb; }
 .login-back { display: grid; place-items: center; min-height: 48px; margin-top: 17px; border-radius: 10px; background: #f5f8f6; color: var(--green-dark); font-size: 14px; font-weight: 700; }
 .login-public-note { margin: 19px 0 0; padding: 14px 15px; background: #eaf4ee; color: #74827c; font-size: 13px; line-height: 1.45; }
-.login-feedback { margin: -7px 0 17px; padding: 12px 14px; border-radius: 9px; font-size: 13px; line-height: 1.5; }
-.login-feedback.error { color: #8a3328; background: #fff0ed; }
-.login-feedback.success { color: #205d49; background: #eaf4ee; }
+.login-feedback { margin: -7px 0 17px; }
+.login-feedback.error { color: #ffe4e6; background: #5b001f; border-color: #881337; }
+.login-feedback.success { color: #14532d; background: #ecfdf3; border-color: #86efac; }
 .login-aside { padding: 25px 24px; border-radius: 19px; background: #e8f4ee; }
 .login-aside h2 { margin: 20px 0 14px; color: #1e4036; font-size: clamp(24px, 2.2vw, 31px); line-height: 1.38; letter-spacing: -.5px; }
 .login-aside p { margin: 0; color: #74827c; font-size: 15px; line-height: 1.5; }

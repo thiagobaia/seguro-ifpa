@@ -65,7 +65,7 @@ export function LoginPanel() {
       <h2 id="login-card-title">Bem-vindo de volta.</h2>
       <p className="login-card-copy">Entre com seu e-mail e sua senha para acessar a área do técnico.</p>
 
-      {message && <p className="login-feedback error" role="alert">{message}</p>}
+      {message && <p className="site-alert login-feedback error" role="alert">{message}</p>}
 
       <form className="login-form" onSubmit={submit}>
         <AuthField id="email" label="E-mail" type="email" autoComplete="email" placeholder="Digite seu e-mail" />

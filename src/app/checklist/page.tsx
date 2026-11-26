@@ -60,16 +60,16 @@ export default async function ChecklistPage({ searchParams }: { searchParams: Pr
 
   return <><main className="form-shell"><section className="form-panel">
     <span className="eyebrow">Espaço do trabalhador · Antes de começar</span><h1>Checklist de segurança</h1><p>Escolha sua função e, se desejar, filtre por setor. Selecione um checklist da lista para abrir e responder.</p>
-    {params.enviado && <p className="notice" role="status">Checklist enviado. Obrigado por fazer sua parte.</p>}
-    {params.erro && <p className="notice" role="alert">Não foi possível enviar. Revise as respostas obrigatórias e tente novamente.</p>}
+{params.enviado && <p className="site-alert site-alert-success" role="status">Checklist enviado. Obrigado por fazer sua parte.</p>}
+{params.erro && <p className="site-alert site-alert-error" role="alert">Não foi possível enviar. Revise as respostas obrigatórias e tente novamente.</p>}
     <form method="get" className="form-grid">
       <div className="field"><label htmlFor="funcao">Função</label><select id="funcao" name="funcao" defaultValue={selectedFunction} required><option value="" disabled>Selecione uma função</option>{availableFunctions.map((item) => <option key={item} value={item}>{item}</option>)}</select></div>
       <div className="field"><label htmlFor="setor">Filtrar por setor</label><select id="setor" name="setor" defaultValue={selectedSector}><option value="">Todos os setores</option>{availableSectors.map((item) => <option key={item} value={item}>{item}</option>)}</select></div>
       <div className="field full"><button className="form-submit" type="submit" disabled={availableFunctions.length === 0}>Ver checklists</button></div>
     </form>
-    {availableFunctions.length === 0 && <p className="notice mt-5">Ainda não há funções ou setores cadastrados em checklists.</p>}
+{availableFunctions.length === 0 && <p className="site-alert site-alert-info mt-5">Ainda não há funções ou setores cadastrados em checklists.</p>}
     {selectedFunction && catalogItems.length > 0 && <WorkerChecklistCatalog checklists={catalogItems} />}
-    {selectedFunction && catalogItems.length === 0 && availableFunctions.length > 0 && <p className="notice mt-5">Não há checklist cadastrado para essa combinação de função e setor. Altere o filtro e tente novamente.</p>}
+{selectedFunction && catalogItems.length === 0 && availableFunctions.length > 0 && <p className="site-alert site-alert-info mt-5">Não há checklist cadastrado para essa combinação de função e setor. Altere o filtro e tente novamente.</p>}
   </section></main><MobileDock /></>;
 }
 

@@ -91,6 +91,7 @@ export function TstDashboard({ userName, requests, reports, checklists, training
   const [creatingChecklist, setCreatingChecklist] = useState(false);
   const [pendingDeleteSubmission, setPendingDeleteSubmission] = useState<ChecklistSubmission | null>(null);
   const [pendingDeleteChecklist, setPendingDeleteChecklist] = useState<ChecklistRecord | null>(null);
+  const [printError, setPrintError] = useState("");
   const [viewingChecklist, setViewingChecklist] = useState<ChecklistRecord | null>(null);
   const [viewingSubmission, setViewingSubmission] = useState<ChecklistSubmission | null>(null);
   const [editingChecklist, setEditingChecklist] = useState<ChecklistRecord | null>(null);
@@ -119,22 +120,23 @@ export function TstDashboard({ userName, requests, reports, checklists, training
   }, []);
 
   async function printChecklist() {
+    setPrintError("");
     const printTitle = viewingSubmission ? `${viewingSubmission.title} - respostas` : viewingChecklist?.title;
     if (!printTitle) return;
     const template = document.querySelector<HTMLElement>("[data-checklist-view-backdrop] [data-checklist-document]");
     if (!template || !template.textContent?.trim()) {
-      window.alert("Não foi possível preparar o checklist para impressão. Feche e abra a visualização novamente.");
+      setPrintError("Não foi possível preparar o checklist para impressão. Feche e abra a visualização novamente.");
       return;
     }
     const printWindow = window.open("", "_blank");
     if (!printWindow) {
-      window.alert("Não foi possível abrir a impressão neste navegador.");
+      setPrintError("Não foi possível abrir a impressão neste navegador.");
       return;
     }
     const stylesheets = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')).map((link) => link.href);
     if (stylesheets.length === 0) {
       printWindow.close();
-      window.alert("Não foi possível localizar a formatação do checklist. Tente imprimir novamente.");
+      setPrintError("Não foi possível localizar a formatação do checklist. Tente imprimir novamente.");
       return;
     }
     printWindow.document.open();
@@ -156,14 +158,14 @@ export function TstDashboard({ userName, requests, reports, checklists, training
     const loadedStylesheets = await Promise.all(stylesheetLoads);
     if (loadedStylesheets.some((loaded) => !loaded)) {
       printWindow.close();
-      window.alert("Não foi possível carregar a formatação do checklist. Tente imprimir novamente.");
+      setPrintError("Não foi possível carregar a formatação do checklist. Tente imprimir novamente.");
       return;
     }
     if (printWindow.document.fonts) await printWindow.document.fonts.ready;
     const printable = printWindow.document.querySelector<HTMLElement>("[data-checklist-document]");
     if (!printable?.textContent?.trim()) {
       printWindow.close();
-      window.alert("O documento de impressão ficou vazio. Tente novamente.");
+      setPrintError("O documento de impressão ficou vazio. Tente novamente.");
       return;
     }
     printWindow.focus();
@@ -236,11 +238,12 @@ export function TstDashboard({ userName, requests, reports, checklists, training
       </header> : <header className="sticky top-0 z-30 flex min-h-[68px] items-center justify-between gap-2 border-b border-slate-200 bg-white/90 px-2 backdrop-blur sm:gap-4 sm:px-6 lg:px-8"><div className="min-w-0"><span className="block truncate text-[9px] font-bold tracking-[.12em] text-emerald-700 sm:text-[10px] sm:tracking-[.16em]">ÁREA RESTRITA · TST</span><span className="block truncate text-[10px] text-slate-500 sm:text-xs">Segurança do Trabalho</span></div><div className="flex shrink-0 items-center gap-1 sm:gap-2"><Link href="/home" className="inline-flex min-h-8 items-center gap-1 whitespace-nowrap rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1.5 text-[10px] font-semibold text-emerald-800 transition hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 sm:min-h-9 sm:gap-2 sm:px-3 sm:py-2 sm:text-sm"><LayoutDashboard size={14} className="sm:h-4 sm:w-4" /><span>Ir para o feed</span></Link><a href="/tst#overview" className="inline-flex min-h-8 items-center gap-1 whitespace-nowrap rounded-lg bg-emerald-700 px-2 py-1.5 text-[10px] font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 sm:min-h-9 sm:gap-2 sm:px-3 sm:py-2 sm:text-sm"><LayoutDashboard size={14} className="sm:h-4 sm:w-4" /><span>Dashboard</span></a></div></header>}
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex items-start justify-between gap-4 px-1 py-1 sm:px-5"><div><span className="mb-2 block text-[11px] font-bold tracking-widest text-emerald-700">{activeSection === "reports" ? "ÁREA DO TÉCNICO / SEGURANÇA DO TRABALHO" : "PAINEL DE CONTROLE"}</span>{activeSection !== "overview" && <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{heading.title}</h1>}<p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">{heading.description}</p></div></div>
-        {created && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">{created === "checklist" ? "Checklist salvo com sucesso." : created === "treinamento" ? "Treinamento publicado com sucesso." : "Informativo publicado com sucesso."}</p>}
-        {updated && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">Checklist atualizado com sucesso.</p>}
-    {deleted && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">{deleted === "resposta" ? "Resposta excluída com sucesso." : deleted === "informativo" ? "Informativo excluído com sucesso." : "Checklist excluído com sucesso."}</p>}
-        {archived && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900" role="status">Resposta arquivada com sucesso.</p>}
-        {error && <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900" role="alert">{error === "checklist" ? "Não foi possível salvar. Confira o título, função, setor e perguntas." : "Não foi possível concluir. Revise os campos e tente novamente."}</p>}
+        {created && <p className="site-alert site-alert-success" role="status">{created === "checklist" ? "Checklist salvo com sucesso." : created === "treinamento" ? "Treinamento publicado com sucesso." : "Informativo publicado com sucesso."}</p>}
+        {updated && <p className="site-alert site-alert-success" role="status">Checklist atualizado com sucesso.</p>}
+        {deleted && <p className="site-alert site-alert-success" role="status">{deleted === "resposta" ? "Resposta excluída com sucesso." : deleted === "informativo" ? "Informativo excluído com sucesso." : "Checklist excluído com sucesso."}</p>}
+        {archived && <p className="site-alert site-alert-success" role="status">Resposta arquivada com sucesso.</p>}
+        {error && <p className="site-alert site-alert-error" role="alert">{error === "checklist" ? "Não foi possível salvar. Confira o título, função, setor e perguntas." : "Não foi possível concluir. Revise os campos e tente novamente."}</p>}
+        {printError && <p className="site-alert site-alert-error" role="alert" aria-live="assertive">{printError}</p>}
 
         {activeSection === "overview" && <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
